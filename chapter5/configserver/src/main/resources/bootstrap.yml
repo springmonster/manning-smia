@@ -4,14 +4,19 @@ spring:
   profiles:
     active:
       - native, git
+  # http://localhost:8071/licensing-service/default
+  # http://localhost:8071/licensing-service/dev
+  # http://localhost:8071/licensing-service/prod
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/config
         git:
-          uri: https://github.com/springmonster/config.git
+          uri: xxx
           searchPaths: licensingservice
+          username: xxx
+          password: xxx
 
 server:
   port: 8071
