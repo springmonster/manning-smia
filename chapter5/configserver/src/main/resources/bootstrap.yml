@@ -3,20 +3,23 @@ spring:
     name: config-server
   profiles:
     active:
-      - native, git
+      - native
   # http://localhost:8071/licensing-service/default
   # http://localhost:8071/licensing-service/dev
   # http://localhost:8071/licensing-service/prod
+  #  There is also a “native” profile in the Config Server that does not use Git but loads the config files from the local classpath or file system (any static URL you want to point to with spring.cloud.config.server.native.searchLocations). To use the native profile, launch the Config Server with spring.profiles.active=native.
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/config
-        git:
-          uri: xxx
-          searchPaths: licensingservice
-          username: xxx
-          password: xxx
+          order: 1
+#        git:
+#          uri: xxx
+#          #          searchPaths: licensingservice
+#          username: xxx
+#          password: xxx
+#          order: 2
 
 server:
   port: 8071
