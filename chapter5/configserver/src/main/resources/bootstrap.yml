@@ -1,9 +1,11 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: config-server
   profiles:
     active:
-      - native
+      - vault
   # http://localhost:8071/licensing-service/default
   # http://localhost:8071/licensing-service/dev
   # http://localhost:8071/licensing-service/prod
@@ -11,9 +13,20 @@ spring:
   cloud:
     config:
       server:
-        native:
-          search-locations: classpath:/config
+        vault:
+          host: 10.122.130.209
+          port: 8200
+          scheme: http
+          token: myroot
           order: 1
+          kv-version: 2
+          default-key: application
+          backend: secret
+#        native:
+#          search-locations: classpath:/config
+#          order: 2
+#        encrypt:
+#          enabled: false
 #        git:
 #          uri: xxx
 #          #          searchPaths: licensingservice
@@ -24,8 +37,9 @@ spring:
 server:
   port: 8071
 
-encrypt:
-  key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+#Encrypt configurations
+#encrypt:
+#  key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
 
 
 #Enable all Spring Boot Actuator endpoints.

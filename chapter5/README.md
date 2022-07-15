@@ -67,7 +67,11 @@ I'd like you to send me an email on <illaryhs@gmail.com> about anything you'd wa
 
 Feel free to file an issue if it doesn't work for your code sample. Thanks.
 
-# Hashicorp Vault
+# Hashicorp Vault Secret
+
+- [spring document](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#spring-cloud-config-server-vault-server)
+- [shared k/v](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#spring-cloud-config-server-vault-server)
+- [vault document](https://www.vaultproject.io/docs/secrets/kv/kv-v2)
 
 ## docker image
 
@@ -77,35 +81,50 @@ docker pull vault:latest
 
 ## docker run
 
-```
-docker run --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:1234' -p 8200:1234 -d vault
-```
-
-## create payload.json
+1. docker run
 
 ```
-{
-    "data": {
-        "user.name": "user",
-        "user.password": "password"
-    }
-}
+docker run --cap-add=IPC_LOCK -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' -p 8200:8200 vault
+```
+
+2. set env
+
+```
+docker ps
+docker exec -it container-id /bin/sh
+
+export VAULT_ADDR='http://0.0.0.0:8200'
+export VAULT_TOKEN='myroot'
+```
+
+3. set kv version
+
+```
+vault secrets enable -version=2 kv
 ```
 
 ## write k/v
 
 ```
-curl \
-    --header "X-Vault-Token:myroot" \
-    --request POST \
-    --data @payload.json \
-    http://127.0.0.1:8200/v1/secret/data/user |json_pp
+vault kv put secret/application foo=bar baz=bam
+vault kv put secret/licensing-service-vault example.property="I am vault"
 ```
 
 ## read k/v
 
 ```
-curl \
-    --header "X-Vault-Token:myroot" \
-    http://127.0.0.1:8200/v1/secret/data/user |json_pp
+vault kv get secret/application
+vault kv get secret/licensing-service-vault
 ```
+
+## read k/v from config application
+
+- visit http://localhost:8071/application/default
+
+- visit http://localhost:8071/licensing-service-vault/default
+
+## read k/v from licensing-service-vault application
+
+- visit http://localhost:8080/property then check result
+- visit http://localhost:8080/shared then check shared results
+
